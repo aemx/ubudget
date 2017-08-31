@@ -1,105 +1,40 @@
-import datetime
+import datetime as dt
 import json
-import os
-import sys
-from terminaltables import SingleTable as tab
-import time
+from terminaltables import SingleTable as tb
 
-class col:
-    r = '\033[1;31m'
-    g = '\033[1;32m'
-    w = '\033[1;37m'
-    x = '\033[0m'
+j = json.load(open('data.json'))
+xt, yt, zt = j["p"][:]
+bn, bd = j['t'][0]['n'], j['t'][0]['d']
+bt, ba = j['t'][0]['t'], j['t'][0]['a']
+n, d, s, x = len(ba), [], [], 0
+ss, xs, ys, zs = [0] * 4
 
-os.system('clear')
+def f(n): return float('{0:.2f}'.format(n))
 
-def twrite(tspace):
-    for char in tspace:
-        time.sleep(0.015)
-        sys.stdout.write(char)
-        sys.stdout.flush()
+t = ['', 'All (100%)',
+    'Saving (' + str(xt) + '%)',
+    'Spending (' + str(yt) + '%)',
+    'Emergency (' + str(zt) + '%)']
 
-twrite(col.g + 'Loading data')
-time.sleep(0.3)
-twrite('.')
-time.sleep(0.5)
-twrite('.')
-time.sleep(0.5)
-twrite('.\n\n' + col.x)
-time.sleep(0.3)
-
-json = json.load(open('data.json'))
-
-# Array of titles       ----------------------------------------------------------------------------------------------------------------
-savings = json["percents"][0]
-spendings = json["percents"][1]
-emergency = json["percents"][2]
-
-titles = [
-    '',
-    'All (100%)',
-    'Saving (' + str(savings) + '%)',
-    'Spending (' + str(spendings) + '%)',
-    'Emergency (' + str(emergency) + '%)'
-    ]
-
-# Array of raw data [D/W] ----------------------------------------------------------------------------------------------------------------
-base_name = json["transactions"][0]["name"]
-base_date = json["transactions"][0]["date"]
-base_type = json["transactions"][0]["type"]
-base_amnt = json["transactions"][0]["amnt"]
-how_many_amounts = len(base_amnt)
-data = []
-x = 0
-
-for x in range(how_many_amounts):
-    row_name = base_date[x] + ' ' + base_name[x]
-    if base_type[x] is 'D':
-        savings_amnt = float('{0:.2f}'.format(base_amnt[x] * (savings / 100)))
-        spendings_amnt = float('{0:.2f}'.format(base_amnt[x] * (spendings / 100)))
-        emergency_amnt = float('{0:.2f}'.format(base_amnt[x] - savings_amnt - spendings_amnt))
-        data.append([
-            row_name,
-            base_amnt[x],
-            savings_amnt,
-            spendings_amnt,
-            emergency_amnt
-        ])
+for x in range(n):
+    r = bd[x] + ' ' + bn[x]
+    if bt[x] is 'D':
+        xa = f(ba[x] * (xt / 100))
+        ya = f(ba[x] * (yt / 100))
+        za = f(ba[x] - xa - ya)
+        d.append([r, ba[x], xa, ya, za])
     else:
-        data.append([
-            row_name,
-            -base_amnt[x],
-            0,
-            -base_amnt[x],
-            0
-        ])
+        d.append([r, -ba[x], 0, -ba[x], 0])
+    ss += d[x][1]
+    xs += d[x][2]
+    ys += d[x][3]
+    zs += d[x][4]
+    if x is n - 1:
+        s.extend([f(ss), f(xs), f(ys), f(zs)])
     x += 1
 
-# Array of total       ----------------------------------------------------------------------------------------------------------------
-sum_of_all = []
-everything_all = 0
-savings_all = 0
-spendings_all = 0
-emergency_all = 0
-
-for x in range(how_many_amounts):
-    everything_all += data[x][1]
-    savings_all += data[x][2]
-    spendings_all += data[x][3]
-    emergency_all += data[x][4]
-    if x is how_many_amounts - 1:
-        sum_of_all.extend([
-            float('{0:.2f}'.format(everything_all)),
-            float('{0:.2f}'.format(savings_all)),
-            float('{0:.2f}'.format(spendings_all)),
-            float('{0:.2f}'.format(emergency_all))
-        ])
-    x += 1
-
-now = datetime.datetime.now()
-total = [now.strftime('%Y-%m-%d') + ' ' + 'GRANDTOTAL']
-total.extend(sum_of_all)
-
-#   ----------------------------------------------------------------------------------------------------------------------------------
-table = tab([titles] + data + [total])
-print(table.table + '\n')
+nw = dt.datetime.now()
+z = [nw.strftime('%Y-%m-%d') + ' ' + 'GRANDTOTAL']
+z.extend(s)
+tb = tb([t] + d + [z])
+print(tb.table)
