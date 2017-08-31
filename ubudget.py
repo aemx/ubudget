@@ -43,9 +43,10 @@ titles = [
     'Emergency (' + str(emergency) + '%)'
     ]
 
-# Array of raw data [d] ----------------------------------------------------------------------------------------------------------------
+# Array of raw data [D/W] ----------------------------------------------------------------------------------------------------------------
 base_name = json["transactions"][0]["name"]
 base_date = json["transactions"][0]["date"]
+base_type = json["transactions"][0]["type"]
 base_amnt = json["transactions"][0]["amnt"]
 how_many_amounts = len(base_amnt)
 data = []
@@ -53,16 +54,25 @@ x = 0
 
 for x in range(how_many_amounts):
     row_name = base_date[x] + ' ' + base_name[x]
-    savings_amnt = float('{0:.2f}'.format(base_amnt[x] * (savings / 100)))
-    spendings_amnt = float('{0:.2f}'.format(base_amnt[x] * (spendings / 100)))
-    emergency_amnt = float('{0:.2f}'.format(base_amnt[x] - savings_amnt - spendings_amnt))
-    data.append([
-        row_name,
-        base_amnt[x],
-        savings_amnt,
-        spendings_amnt,
-        emergency_amnt
-    ])
+    if base_type[x] is 'D':
+        savings_amnt = float('{0:.2f}'.format(base_amnt[x] * (savings / 100)))
+        spendings_amnt = float('{0:.2f}'.format(base_amnt[x] * (spendings / 100)))
+        emergency_amnt = float('{0:.2f}'.format(base_amnt[x] - savings_amnt - spendings_amnt))
+        data.append([
+            row_name,
+            base_amnt[x],
+            savings_amnt,
+            spendings_amnt,
+            emergency_amnt
+        ])
+    else:
+        data.append([
+            row_name,
+            -base_amnt[x],
+            0,
+            -base_amnt[x],
+            0
+        ])
     x += 1
 
 # Array of total       ----------------------------------------------------------------------------------------------------------------
