@@ -1,6 +1,4 @@
-<img src = "https://www.dropbox.com/s/70f6rflcanagapl/ubudget.png?raw=1" alt = "ubudget" style = "width: 400px; display: block; margin: auto"/>
-
-<p style = "text-align: center;">An ultra-minimal budgeting program written in Python.</p>
+<img src = "https://www.dropbox.com/s/70f6rflcanagapl/ubudget.png?raw=1" alt = "ubudget"/>
 
 ## Setup
 
@@ -61,4 +59,4 @@ sudo rm -r ubudget-0.0.1
 This project is licensed under the [MIT License](https://github.com/aemx/ubudget/blob/master/LICENSE).
   
 ---
-_<p style = "text-align: center;">Last updated on 2017 September 01 for version 0.0.1</p>_
+_Last updated on 01 September 2017 for version 0.0.1_
